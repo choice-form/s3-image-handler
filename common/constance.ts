@@ -33,14 +33,14 @@ export const VALID_ACTION: Record<
                 isNumberString(value) &&
                 Number(value) >= 100 &&
                 Number(value) <= 4096,
-            formater: (value: any) => getReduceModValue(value, 100),
+            formater: (value: any) => getReduceModValue(value, 1),
         },
         h: {
             validator: (value: any) =>
                 isNumberString(value) &&
                 Number(value) >= 100 &&
                 Number(value) <= 4096,
-            formater: (value: any) => getReduceModValue(value, 100),
+            formater: (value: any) => getReduceModValue(value, 1),
         },
         limit: {
             validator: (value: string) => ['0', '1'].includes(value),

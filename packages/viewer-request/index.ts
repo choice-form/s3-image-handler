@@ -5,6 +5,7 @@ import {
     getOpStringInQuerystring,
     parseUri,
     querStringIncludeOpString,
+    replaceAliasWithOpString,
     uriIncludeOpString,
 } from '@/common/utils';
 import util from 'util';
@@ -12,6 +13,7 @@ import util from 'util';
 export async function handler(event: CfViewerRequestEvent) {
     const request = event.Records[0].cf.request;
     const originUri = request.uri;
+    request.uri = replaceAliasWithOpString(request.uri);
     console.log(`Reuqest uri: ${originUri}`);
     const originQuerystring = request.querystring;
     console.log(`Reuqest querystring: ${originQuerystring}`);

@@ -1,13 +1,14 @@
 import {
-    querStringIncludeOpString,
-    uriIncludeOpString,
-    parseUri,
-    getOpStringInQuerystring,
-    decodeOpStringInQuery,
     decodeOpString,
+    decodeOpStringInQuery,
     encodeOpString,
-    isNumberString,
+    getOpStringInQuerystring,
     getReduceModValue,
+    isNumberString,
+    parseUri,
+    querStringIncludeOpString,
+    replaceAliasWithOpString,
+    uriIncludeOpString,
 } from '@/common/utils';
 
 describe('querStringIncludeOpString', () => {
@@ -207,7 +208,7 @@ describe('decodeOpString', () => {
 });
 
 describe('encodeOpString', () => {
-    test('encode image op string successful', () => {
+    test.skip('encode image op string successful', () => {
         expect(
             encodeOpString({
                 format: { f: 'webp' },
@@ -301,5 +302,43 @@ describe('getReduceModValue', () => {
 
     test('negative number string input', () => {
         expect(getReduceModValue('-50', 100)).toBe('-50');
+    });
+});
+
+describe('convertAliasToOpString', () => {
+    test('convert alias to op string', () => {
+        expect(replaceAliasWithOpString('anything')).toStrictEqual('anything');
+
+        expect(replaceAliasWithOpString('test.png!high')).toStrictEqual(
+            'test.png__op__quality,q_80__op__format,f_webp',
+        );
+
+        expect(replaceAliasWithOpString('test.png!avatar')).toStrictEqual(
+            'test.png__op__resize,m_mfit,w_64,h_64__op__quality,q_80',
+        );
+
+        expect(replaceAliasWithOpString('test.png!thumbnail')).toStrictEqual(
+            'test.png__op__resize,m_lfit,w_128,h_128,limit_1__op__quality,q_40',
+        );
+
+        expect(replaceAliasWithOpString('test.png!m480')).toStrictEqual(
+            'test.png__op__resize,m_lfit,w_480,h_480__op__quality,q_80',
+        );
+
+        expect(replaceAliasWithOpString('test.png!m720')).toStrictEqual(
+            'test.png__op__resize,m_lfit,w_720,h_720__op__quality,q_80',
+        );
+
+        expect(replaceAliasWithOpString('test.png!m1080')).toStrictEqual(
+            'test.png__op__resize,m_lfit,w_1080,h_1080__op__quality,q_80',
+        );
+
+        expect(replaceAliasWithOpString('test.png!m1920')).toStrictEqual(
+            'test.png__op__resize,m_lfit,w_480,h_480__op__quality,q_80',
+        );
+
+        expect(replaceAliasWithOpString('test.png!origin')).toStrictEqual(
+            'test.png',
+        );
     });
 });

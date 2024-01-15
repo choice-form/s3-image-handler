@@ -1,8 +1,8 @@
 import {
     IMAGE_OPERATION_SORT,
     IMAGE_OP_STRING_IN_QUERY__KEY,
-    IMAGE_OP_STRING_IN_QUERY__SPLIT,
     IMAGE_OP_STRING_IN_QUERY__PERFIX,
+    IMAGE_OP_STRING_IN_QUERY__SPLIT,
     IMAGE_OP_STRING_SPLIT,
     VALID_ACTION,
 } from './constance';
@@ -170,4 +170,69 @@ export function parseQuerystring(querystring: string) {
         result[key] = value;
     });
     return result;
+}
+
+const ALIAS_PATTERN = /!(high|m\d{2,4}|avatar|thumbnail|origin)$/i;
+
+function extractAlias(url: string) {
+    return ALIAS_PATTERN.exec(url)?.[1];
+}
+
+const CUSTOM_SIZE_PATTERN = /^m(\d{2,4})$/i;
+
+function parseCustomSize(alias: string) {
+    return CUSTOM_SIZE_PATTERN.exec(alias)?.[1];
+}
+
+function convertAliasToOpString(url: string) {
+    const alias = extractAlias(url);
+
+    if (alias === 'high') {
+        return encodeOpString({ format: { f: 'webp' }, quality: { q: '80' } });
+    }
+
+    if (alias === 'avatar') {
+        return encodeOpString({
+            quality: { q: '80' },
+            resize: { w: '64', h: '64', m: 'mfit' },
+        });
+    }
+
+    if (alias === 'thumbnail') {
+        return encodeOpString({
+            quality: { q: '40' },
+            resize: { w: '128', h: '128', m: 'lfit', limit: '1' },
+        });
+    }
+
+    if (alias === 'origin') {
+        return '';
+    }
+
+    if (typeof alias === 'string' && CUSTOM_SIZE_PATTERN.test(alias)) {
+        const customSize = parseCustomSize(alias);
+        if (customSize) {
+            if (['480', '720', '1080'].includes(customSize)) {
+                return encodeOpString({
+                    quality: { q: '80' },
+                    resize: { w: customSize, h: customSize, m: 'lfit' },
+                });
+            } else {
+                return encodeOpString({
+                    quality: { q: '80' },
+                    resize: { w: '480', h: '480', m: 'lfit' },
+                });
+            }
+        }
+    }
+
+    return false;
+}
+
+export function replaceAliasWithOpString(url: string) {
+    const opString = convertAliasToOpString(url);
+    if (opString !== false) {
+        return url.replace(ALIAS_PATTERN, opString);
+    }
+    return url;
 }
