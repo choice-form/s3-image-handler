@@ -314,7 +314,7 @@ describe('convertAliasToOpString', () => {
         );
 
         expect(replaceAliasWithOpString('test.png!avatar')).toStrictEqual(
-            'test.png__op__resize,m_mfit,w_64,h_64__op__quality,q_80',
+            'test.png__op__resize,m_fixed,w_64,h_64__op__quality,q_80',
         );
 
         expect(replaceAliasWithOpString('test.png!thumbnail')).toStrictEqual(

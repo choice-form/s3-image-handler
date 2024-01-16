@@ -155,7 +155,7 @@ describe('viewer-request handler', () => {
             uri: '/path/to/file/image.jpg!avatar',
         });
         expect((await handler(event)).uri).toEqual(
-            '/path/to/file/image.jpg__op__resize,m_mfit,w_64,h_64__op__quality,q_80',
+            '/path/to/file/image.jpg__op__resize,m_fixed,w_64,h_64__op__quality,q_80',
         );
 
         event = createCfViewerRequestEvent({

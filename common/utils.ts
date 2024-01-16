@@ -194,7 +194,7 @@ function convertAliasToOpString(url: string) {
     if (alias === 'avatar') {
         return encodeOpString({
             quality: { q: '80' },
-            resize: { w: '64', h: '64', m: 'mfit' },
+            resize: { w: '64', h: '64', m: 'fixed' },
         });
     }
 
